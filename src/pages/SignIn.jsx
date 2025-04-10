@@ -7,7 +7,7 @@ function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [user, setUser] = useState({ username: "", password: "" });
+  const [user, setUser] = useState({ mobileno: "", password: "" });
   const [data, setData] = useState(null); // Holds API response data
   const [error, setError] = useState(""); // Track login errors
 
@@ -20,7 +20,7 @@ function SignIn() {
       e.preventDefault();
     
       try {
-        const response = await fetch("http://localhost:8080/jpa/validate", {
+        const response = await fetch("http://localhost:8080/users/validate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(user),
@@ -32,16 +32,14 @@ function SignIn() {
     
         const result = await response.json();
     
-        if (result.username) {
+        if (result.fullname) {
           // Store user data in Redux & localStorage
           dispatch(
             login({
               user: {
-                username: result.username,
-                firstname: result.firstname,
-                lastname: result.lastname,
-                phoneno: result.phoneno,
-                mail: result.mail,
+                id: result.id,
+                fullname: result.fullname,
+                mobileno: result.mobileno,
               },
             })
           );
@@ -49,11 +47,11 @@ function SignIn() {
     
           navigate("/home"); // Redirect after login
         } else {
-          setError("Invalid username or password.");
+          setError("Invalid phone number or password.");
         }
       } catch (error) {
         console.error("Login Error:", error);
-        setError("An error occurred. Please try again.");
+        setError("Invalid Cardinentals",error);
       }
     };
     
@@ -61,23 +59,23 @@ function SignIn() {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img alt="Your Company" src="Clogo2.png" className="mx-auto h-30 w-auto" />
+        <img alt="Your Company" src="logo.png" className="mx-auto h-30 w-auto" />
         <h2 className="mt-2 text-center text-2xl font-bold text-gray-900">Login</h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleLogin} className="space-y-6">
-          {/* Username Input */}
+          {/* Mobile Number Input */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-900">
-              Username
+            <label htmlFor="mobileno" className="block text-sm font-medium text-gray-900">
+              Mobile Number
             </label>
             <input
-              id="username"
-              name="username"
+              id="mobileno"
+              name="mobileno"
               type="text"
               required
-              autoComplete="username"
+              autoComplete="mobileno"
               onChange={handleChange}
               className="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
             />
@@ -120,7 +118,7 @@ function SignIn() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Create Account?{" "}
-          <Link to="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500">
+          <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
             Sign Up
           </Link>
         </p>

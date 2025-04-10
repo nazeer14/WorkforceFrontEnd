@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Filter from "../components/Filter";
 import { login } from "../Store/authSlice"; // Import login action
 
@@ -27,6 +27,7 @@ function Home() {
   return (
     <>
       <Filter />
+      <Outlet/>
     </>
   );
 }

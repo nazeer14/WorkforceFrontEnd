@@ -9,23 +9,35 @@ import About from "./pages/About";
 import NotFound from "./components/NotFound";
 import Forgot from "./pages/Forgot";
 import Register from "./pages/Register";
+import ProfileSettings from "./components/ProfileSettings";
+import Careers from "./pages/Careers";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   return (
       <Routes>
-        {/* Pages WITHOUT Header */}
+        {/* Public Routes */}
+        <Route path="/" element={<SignIn />} />
         <Route path="/login" element={<SignIn />} />
         <Route path="/forgot" element={<Forgot />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<SignIn />} />
 
-        {/* Pages WITH Header (Layout) */}
+        {/* Protected Routes with Layout */}
         <Route element={<Layout />}>
-          <Route path="/home" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/workers" element={<Workers />} />
-          <Route path="/booking" element={<Booking />} />
+          <Route path="/careers" element={<Careers/>}/>
+          <Route path="/contact-us" element={<ContactUs/>}/>
+          {/* Nested routes under /home */}
+
+          <Route path="/home" element={<Home />}>
+            <Route path="profilesetting" element={<ProfileSettings />} />
+            <Route path="workers" element={<Workers />} />
+            <Route path="booking" element={<Booking />} />
+
+          </Route>
         </Route>
+
+        {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
   );

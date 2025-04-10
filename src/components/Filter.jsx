@@ -4,11 +4,11 @@ function Filter() {
     const [filters, setFilters] = useState({
         category: '',
         location: '',
-        timing: '',
         gender: ''
     });
     const [error, setError] = useState('');
     const [workers, setWorkers] = useState([]);
+    const [showHome, setShowHome] = useState(true); // NEW: control home data
 
     const handleChange = (e) => {
         setFilters({
@@ -19,7 +19,7 @@ function Filter() {
     };
 
     const handleSubmit = async () => {
-        if (!filters.category || !filters.location || !filters.timing || !filters.gender) {
+        if (!filters.category || !filters.location || !filters.gender) {
             setError('All fields are required!');
             return;
         }
@@ -38,8 +38,11 @@ function Filter() {
             const data = await response.json();
             if (data.length === 0) {
                 setError('Sorry! No Workers Available.');
+                setWorkers([]);
+                setShowHome(false); // hide home if search was valid but empty
             } else {
                 setWorkers(data);
+                setShowHome(false); // hide home after successful fetch
             }
         } catch (error) {
             console.error('Error fetching workers:', error);
@@ -48,7 +51,18 @@ function Filter() {
     };
 
     return (
-        <div className="bg-gray-300 p-4 rounded-lg shadow-md">
+        <div className="bg-gray-300 p-6 rounded-lg shadow-md">
+            {/* Home Section (before filtering) */}
+            {showHome && (
+                <div className="text-center mb-6">
+                    <h1 className="text-2xl font-bold text-purple-700 mb-2">Welcome to WorkForce!</h1>
+                    <p className="text-gray-700">
+                        Find reliable workers near you. Use the filters below to get started.
+                    </p>
+                </div>
+            )}
+
+            {/* Filter Section */}
             <nav className="flex flex-col lg:flex-row gap-3 lg:gap-4 justify-center items-center">
                 <select name="category" onChange={handleChange} className="border border-purple-600 p-2 rounded-lg w-full lg:w-auto">
                     <option value="">--Work Type--</option>
@@ -74,13 +88,6 @@ function Filter() {
                     <option value="Pune">Pune</option>
                 </select>
 
-                <select name="timing" onChange={handleChange} className="border border-purple-600 p-2 rounded-lg w-full lg:w-auto">
-                    <option value="">-- Time --</option>
-                    <option value="full">Full Day</option>
-                    <option value="half">Half Day</option>
-                    <option value="hour">Per Hour</option>
-                </select>
-
                 <select name="gender" onChange={handleChange} className="border border-purple-600 p-2 rounded-lg w-full lg:w-auto">
                     <option value="">--Gender--</option>
                     <option value="any">Any</option>
@@ -93,15 +100,16 @@ function Filter() {
                 </button>
             </nav>
 
-            {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
+            {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
 
+            {/* Filtered Results */}
             {workers.length > 0 && (
-                <div className="mt-4 p-4 bg-white rounded-lg shadow">
-                    <h2 className="text-lg font-semibold mb-2">Available Workers:</h2>
-                    <ul>
+                <div className="mt-6 p-4 bg-white rounded-lg shadow">
+                    <h2 className="text-lg font-semibold mb-3 text-center">Available Workers:</h2>
+                    <ul className="divide-y divide-gray-200">
                         {workers.map((worker) => (
-                            <li key={worker.id} className="border-b p-2">
-                                {worker.name} - {worker.category} ({worker.location})
+                            <li key={worker.id} className="py-2">
+                                <strong>{worker.firstname}</strong> - {worker.category} ({worker.location})
                             </li>
                         ))}
                     </ul>

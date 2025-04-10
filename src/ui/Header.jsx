@@ -1,121 +1,113 @@
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useSelector,useDispatch } from 'react-redux'
-import { Link } from 'react-router'
-import { useNavigate } from 'react-router-dom';
-import { logout } from "../Store/authSlice";
+import {  Disclosure,  DisclosureButton,  DisclosurePanel,  Menu,  MenuButton,  MenuItem,  MenuItems} from '@headlessui/react';
+import {  Bars3Icon,  BellIcon,  XMarkIcon} from '@heroicons/react/24/outline';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../Store/authSlice';
 
+const NAV_ITEMS = [
+  { name: 'Home', path: '/home' },
+  { name: 'About', path: '/about' },
+  { name: 'Careers', path: '/careers' },
+  { name: 'Contact Us', path: '/contact-us' },
+];
 
-const navigation = [
-  { name: 'Dashboard', href: '/home', current: true },
-  { name: 'Home', href: '/home', current: false },
-  { name: 'About', href: './about', current: false },
+const classNames = (...classes) => classes.filter(Boolean).join(' ');
 
-]
-
-
-
-
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-function link1(){
-  return(
-  <Link to="/userData" className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden">
-    Your Profile
-  </Link>
-  )}
-const userphoto="userpic.jpg"
-
-export default function Header() {
-
+const Header = () => {
   const dispatch = useDispatch();
-const navigate = useNavigate();
-const user = useSelector((state) => state.login.user);
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.login.user);
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login"); // Redirect to login page after logout
+    navigate('/login');
   };
 
   return (
     <Disclosure as="nav" className="bg-blue-900">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            {/* Mobile menu button*/}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
-              <span className="absolute -inset-0.5" />
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon aria-hidden="true" className="block size-6 group-data-open:hidden" />
-              <XMarkIcon aria-hidden="true" className="hidden size-6 group-data-open:block" />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Mobile menu toggle */}
+          <div className="flex items-center sm:hidden">
+            <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
+              <Bars3Icon className="block h-6 w-6 data-[open]:hidden" aria-hidden="true" />
+              <XMarkIcon className="hidden h-6 w-6 data-[open]:block" aria-hidden="true" />
             </DisclosureButton>
           </div>
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex shrink-0 items-center">
-              <img
-                alt="Your Company"
-                src="Clogo2.png"
-                className="h-8 w-auto rounded-xl"
-              />
-            </div>
-            <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
-                    className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium',
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
-            {/* Profile dropdown */}
-            <Menu as="div" className="relative ml-3">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center gap-2">
+              <img src="/logo.png" alt="worker force" className="h-8 w-auto rounded-xl" />
+              <span className="text-white text-lg font-semibold hidden sm:inline">Work Force</span>
+            </Link>
+          </div>
+
+          {/* Desktop Nav */}
+          <div className="hidden sm:flex sm:ml-6 space-x-10">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className="text-gray-100 hover:bg-gray-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Profile Menu */}
+          <div className="ml-3 relative">
+            <Menu as="div" className="relative">
               <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
+                <MenuButton className="flex rounded-full bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
                   <img
-                    alt="userpic"
-                    src={userphoto}
-                    className="size-8 rounded-full"
+                    src="/userpic.jpg"
+                    alt="User profile"
+                    className="h-8 w-8 rounded-full"
                   />
                 </MenuButton>
               </div>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-              >
-               <MenuItem>
-               {link1()}
-               </MenuItem>
+              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white rounded-md shadow-lg  focus:outline-none">
+                {user?.id && (
+                  <MenuItem>
+                    {({ active }) => (
+                      <span
+                        className={classNames(
+                          active ? 'bg-gray-100' : '',
+                          'block px-4 py-2 text-sm text-gray-700'
+                        )}
+                      >
+                        ID: {user.id}
+                      </span>
+                    )}
+                  </MenuItem>
+                )}
                 <MenuItem>
-                  <Link
-                    to="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Settings
-                  </Link>
+                  {({ active }) => (
+                    <Link
+                      to="home/profilesetting"
+                      className={classNames(
+                        active ? 'bg-gray-100' : '',
+                        'block px-4 py-2 text-sm text-gray-700'
+                      )}
+                    >
+                      Profile Settings
+                    </Link>
+                  )}
                 </MenuItem>
                 <MenuItem>
-                  <button
-                    onClick={handleLogout}
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Logout
-                  </button>
+                  {({ active }) => (
+                    <button
+                      onClick={handleLogout}
+                      className={classNames(
+                        active ? 'bg-gray-100' : '',
+                        'w-full text-left px-4 py-2 text-sm text-gray-700'
+                      )}
+                    >
+                      Logout
+                    </button>
+                  )}
                 </MenuItem>
               </MenuItems>
             </Menu>
@@ -123,18 +115,15 @@ const user = useSelector((state) => state.login.user);
         </div>
       </div>
 
+      {/* Mobile Menu */}
       <DisclosurePanel className="sm:hidden">
-        <div className="space-y-1 px-2 pt-2 pb-3">
-          {navigation.map((item) => (
+        <div className="px-2 pt-2 pb-3 space-y-1">
+          {NAV_ITEMS.map((item) => (
             <DisclosureButton
               key={item.name}
-              as="a"
-              href={item.href}
-              aria-current={item.current ? 'page' : undefined}
-              className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
-              )}
+              as={Link}
+              to={item.path}
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
             >
               {item.name}
             </DisclosureButton>
@@ -142,5 +131,7 @@ const user = useSelector((state) => state.login.user);
         </div>
       </DisclosurePanel>
     </Disclosure>
-  )
-}
+  );
+};
+
+export default Header;

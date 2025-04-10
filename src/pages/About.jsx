@@ -1,6 +1,29 @@
-import React from "react";
+import React ,{useState ,useEffect} from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login } from "../Store/authSlice";
 
 const About = () => {
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.login.user);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) {
+        dispatch(login({ user: storedUser })); // Restore user from localStorage
+      } else {
+        navigate("/login"); // Redirect if no user is found
+      }
+    }
+    setLoading(false);
+  }, [user, navigate, dispatch]);
+
+  if (loading || !user) return null; // Prevent flickering    
+
   const team = [
     { name: "Nazeer", role: "Founder", img: "founder.jpg" },
     //{ name: "Armando", role: "COO", img: "https://via.placeholder.com/100" },
