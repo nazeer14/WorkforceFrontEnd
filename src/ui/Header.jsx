@@ -37,7 +37,7 @@ const Header = () => {
 
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/home" className="flex items-center gap-2">
               <img src="/logo.png" alt="worker force" className="h-8 w-auto rounded-xl" />
               <span className="text-white text-lg font-semibold hidden sm:inline">Work Force</span>
             </Link>
@@ -86,7 +86,7 @@ const Header = () => {
                 <MenuItem>
                   {({ active }) => (
                     <Link
-                      to="home/profilesetting"
+                      to="/profilesettings"
                       className={classNames(
                         active ? 'bg-gray-100' : '',
                         'block px-4 py-2 text-sm text-gray-700'

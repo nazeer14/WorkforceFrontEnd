@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Filter from "../components/Filter";
 import { login } from "../Store/authSlice"; // Import login action
 
 function Home() {
+
+  const location = useLocation();
+    const isProfilePage = location.pathname.includes('/profilesettings');
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.login.user);
   const navigate = useNavigate();
@@ -26,7 +30,7 @@ function Home() {
 
   return (
     <>
-      <Filter />
+      {!isProfilePage &&(<Filter />)}
       <Outlet/>
     </>
   );

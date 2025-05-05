@@ -1,28 +1,61 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SocialIcon } from "react-social-icons";
+import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function ContactUs() {
+  const user = useSelector((state) => state.login.user);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    userid:user.id,
     name: "",
-    email: "",
-    phone: "",
+    mail: "",
+    number: "",
     message: "",
   });
+  const [error,setError]=useState()
+  const [message,setMessage]=useState();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Handle message submission securely (API or email integration)
-    navigate("/pup", { state: { message: [formData.name] } });
+    try {
+      const response = await fetch("http://localhost:8080/contact/usermsg", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`failed to send message: ${response.statusText}`);
+      }
+  
+      toast.success("Message sent successfully!", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      setError(null);
+      setFormData({
+        userid: user.id,
+        name: "",
+        mail: "",
+        number: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Server problem. Try again!");
+      setMessage();
+    }
   };
-
+  
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-10 sm:px-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-10 sm:px-8"> <ToastContainer />
       <h2 className="text-center text-3xl sm:text-5xl font-bold text-blue-600 mb-10">
         Get in Touch
       </h2>
@@ -84,27 +117,27 @@ function ContactUs() {
         </div>
         {/* Message Form Section */}
         <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-xl border border-gray-200">
-          <h3 className="text-xl font-semibold text-purple-500 mb-6">Send Message</h3>
+           <h3 className="text-xl font-semibold text-purple-500 mb-6">Send Message</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block mb-1 font-medium">Full Name</label>
+              <label className="block mb-1 font-medium">Name</label>
               <input
                 name="name"
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Enter Full Name"
+                placeholder="Enter Your Name"
                 required
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">Email</label>
+              <label className="block mb-1 font-medium">Mail*</label>
               <input
-                name="email"
-                type="email"
-                value={formData.email}
+                name="mail"
+                type="mail"
+                value={formData.mail}
                 onChange={handleChange}
                 placeholder="example@mail.com"
                 required
@@ -113,19 +146,19 @@ function ContactUs() {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">Phone</label>
+              <label className="block mb-1 font-medium">Phone Number</label>
               <input
-                name="phone"
+                name="number"
                 type="text"
-                value={formData.phone}
+                value={formData.number}
                 onChange={handleChange}
-                placeholder="Phone number"
+                placeholder="number number(Optional)"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">Message</label>
+              <label className="block mb-1 font-medium">Message*</label>
               <textarea
                 name="message"
                 value={formData.message}
@@ -134,7 +167,9 @@ function ContactUs() {
                 required
                 className="w-full h-36 p-3 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
+              {error&&<p className="text-red-500 text-xs">{error}</p>}
             </div>
+            
 
             <button
               type="submit"
@@ -142,7 +177,7 @@ function ContactUs() {
             >
               Send
             </button>
-          </form>
+            </form>
         </div>
       </div>
     </div>

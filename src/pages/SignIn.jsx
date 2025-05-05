@@ -15,17 +15,27 @@ function SignIn() {
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
-
+  const phoneRegex = /^(\+91[\-\s]?)?[6-9]\d{9}$/;
     const handleLogin = async (e) => {
       e.preventDefault();
-    
+      if(!phoneRegex.test(user.mobileno))
+      {
+        setError("Wrong number format");
+        return;
+      }
       try {
         const response = await fetch("http://localhost:8080/users/validate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(user),
         });
-    
+        
+        if(response.status===404)
+        {
+          setError("Invalid Number or Password");
+          return;
+        }
+
         if (!response.ok) {
           throw new Error(`Login failed: ${response.statusText}`);
         }
@@ -51,7 +61,7 @@ function SignIn() {
         }
       } catch (error) {
         console.error("Login Error:", error);
-        setError("Invalid Cardinentals",error);
+        setError("Server problem. Try again!",error);
       }
     };
     
@@ -75,6 +85,7 @@ function SignIn() {
               name="mobileno"
               type="text"
               required
+              placeholder="Enter Mobile Number"
               autoComplete="mobileno"
               onChange={handleChange}
               className="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
@@ -96,6 +107,7 @@ function SignIn() {
               name="password"
               type="password"
               required
+              placeholder="Enter Password"
               autoComplete="current-password"
               onChange={handleChange}
               className="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600"
