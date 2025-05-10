@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WorkerCard from "./WorkerCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setWorkers } from "../Store/WorkerSlice";
@@ -17,13 +17,16 @@ function Filter() {
   const [error, setError] = useState("");
   const [showHome, setShowHome] = useState(true);
   const [loading, setLoading] = useState(false);
-
   const handleChange = (e) => {
     setFilters({
       ...filters,
       [e.target.name]: e.target.value,
     });
     setError("");
+  };
+
+  const handleBack = () => {
+    setShowHome(true);
   };
 
   const handleSubmit = async () => {
@@ -51,7 +54,7 @@ function Filter() {
       if (response.status === 404 || response.status === 204) {
         setError("Sorry! No Workers Available.");
         dispatch(setWorkers([]));
-        setShowHome(false);
+        setShowHome(true);
         return;
       }
 
@@ -64,7 +67,7 @@ function Filter() {
       if (data.length === 0) {
         setError("Sorry! No Workers Available.");
         dispatch(setWorkers([]));
-        setShowHome(false);
+        setShowHome(true);
       } else {
         dispatch(setWorkers(data));
         setShowHome(false);
@@ -91,12 +94,13 @@ function Filter() {
               Welcome to WorkForce!
             </h1>
             <p className="text-gray-700">
-              Find reliable workers near you. Use the filters below to get started.
+              Find reliable workers near you. Use the filters below to get
+              started.
             </p>
           </div>
 
           {/* Filter Section */}
-          <nav className="flex flex-col lg:flex-row gap-3 lg:gap-4 justify-center items-center">
+          <nav className="flex flex-col md:flex-row lg:flex-row gap-3 lg:gap-4 justify-center items-center">
             <select
               name="workCategory"
               onChange={handleChange}
@@ -145,7 +149,7 @@ function Filter() {
           </nav>
 
           {/* Buttons */}
-          <div className="mt-4 flex flex-col sm:flex-row justify-center items-center gap-3">
+          <div className="mt-4 flex flex-row-reverse justify-center items-center gap-3">
             <button
               className="text-white bg-blue-600 p-2 px-6 rounded-lg w-full sm:w-auto hover:bg-blue-700 transition"
               onClick={handleSubmit}
@@ -153,9 +157,13 @@ function Filter() {
               {loading ? "Searching..." : "Search"}
             </button>
             <button
-              className="text-white bg-gray-900 p-2 px-6 rounded-lg w-full sm:w-auto hover:bg-gray-700"
+              className=" border-2 p-2 px-6 rounded-lg w-full sm:w-auto hover:bg-gray-700 hover:text-white"
               onClick={() => {
-                setFilters({ workCategory: "", preferedLocation: "", gender: "" });
+                setFilters({
+                  workCategory: "",
+                  preferedLocation: "",
+                  gender: "",
+                });
                 dispatch(setWorkers([]));
                 setError("");
               }}
@@ -165,44 +173,42 @@ function Filter() {
           </div>
         </>
       ) : (
-        <>
-          {/* Back Button & Search Box */}
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-            <input
-              type="text"
-              placeholder="Search by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-400 p-2 rounded w-full sm:w-1/2"
-            />
-          </div>
-        </>
+        <></>
       )}
 
       {/* Error Message */}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+      {/* Back Button & Search Box */}
 
       {/* Workers List */}
       {reduxWorkers.length > 0 && (
         <>
-        <div className="mt-6 p-4 bg-white rounded-lg shadow">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-            {filteredWorkers.map((worker) => (
-              <WorkerCard key={worker.id} worker={worker} />
-            ))}
+          <div className="mt-3 p-2 bg-white rounded-lg shadow">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+              <input
+                type="text"
+                placeholder="Search by name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-400 p-2 rounded w-full sm:w-1/2"
+              />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-2">
+              {filteredWorkers.map((worker) => (
+                <WorkerCard key={worker.id} worker={worker} />
+              ))}
+            </div>
           </div>
-          
-        </div>
-        <button
-              onClick={() => {
-                setShowHome(true);
-                dispatch(setWorkers([]));
-                setSearchTerm("");
-              }}
-              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-purple-800"
-            >
-              ← Back
-            </button>
+          <button
+            onClick={() => {
+              handleBack();
+              dispatch(setWorkers([]));
+              setSearchTerm("");
+            }}
+            className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-purple-800"
+          >
+            ← Back
+          </button>
         </>
       )}
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./ui/Layout";
 import SignIn from "./pages/SignIn";
@@ -11,9 +11,13 @@ import ProfileSettings from "./components/ProfileSettings";
 import Careers from "./pages/Careers";
 import ContactUs from "./pages/ContactUs";
 import WorkerDetails from "./components/WorkerDetails";
+import Booking from "./components/Booking";
+import BookingData from "./components/BookingData";
+import BookingsHistory from "./components/BookingsHistory";
 
 function App() {
   const [workers, setWorkers] = useState([]);
+  const [booking,setBooking]=useState([]);
 
   return (
     <Routes>
@@ -31,9 +35,10 @@ function App() {
           <Route path="/home" element={<Home setWorkers={setWorkers} />}/>
           <Route path="/profilesettings" element={<ProfileSettings/>}/>
           <Route path="/worker/:id" element={<WorkerDetails workers={workers} />} />
+          <Route path="/worker/booking/:id" element={<Booking workers={workers} />}/>
+          <Route path="/bookings" element={<BookingsHistory/>}/>
+          <Route path="/booking/:id" element={<BookingData/>}/>
         </Route>        
-
-        {/* Catch-all for unmatched routes */}
         <Route path="*" element={<NotFound />} />
     </Routes>
   );

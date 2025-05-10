@@ -1,17 +1,26 @@
-import {  Disclosure,  DisclosureButton,  DisclosurePanel,  Menu,  MenuButton,  MenuItem,  MenuItems} from '@headlessui/react';
-import {  Bars3Icon,  BellIcon,  XMarkIcon} from '@heroicons/react/24/outline';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../Store/authSlice';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../Store/authSlice";
 
 const NAV_ITEMS = [
-  { name: 'Home', path: '/home' },
-  { name: 'About', path: '/about' },
-  { name: 'Careers', path: '/careers' },
-  { name: 'Contact Us', path: '/contact-us' },
+  { name: "Home", path: "/home" },
+  { name: "History", path: "/bookings" },
+  { name: "About", path: "/about" },
+  { name: "Careers", path: "/careers" },
+  { name: "Contact Us", path: "/contact-us" },
 ];
 
-const classNames = (...classes) => classes.filter(Boolean).join(' ');
+const classNames = (...classes) => classes.filter(Boolean).join(" ");
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -20,26 +29,38 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
-    <Disclosure as="nav" className="bg-blue-900">
+    <Disclosure as="nav" className="bg-purple-900 relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Mobile menu toggle */}
           <div className="flex items-center sm:hidden">
             <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
-              <Bars3Icon className="block h-6 w-6 data-[open]:hidden" aria-hidden="true" />
-              <XMarkIcon className="hidden h-6 w-6 data-[open]:block" aria-hidden="true" />
+              <Bars3Icon
+                className="block h-6 w-6 data-[open]:hidden"
+                aria-hidden="true"
+              />
+              <XMarkIcon
+                className="hidden h-6 w-6 data-[open]:block"
+                aria-hidden="true"
+              />
             </DisclosureButton>
           </div>
 
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/home" className="flex items-center gap-2">
-              <img src="/logo.png" alt="worker force" className="h-8 w-auto rounded-xl" />
-              <span className="text-white text-lg font-semibold hidden sm:inline">Work Force</span>
+              <img
+                src="/logo.png"
+                alt="worker force"
+                className="h-8 w-auto rounded-xl"
+              />
+              <span className="text-white text-lg font-semibold hidden sm:inline">
+                Work Force
+              </span>
             </Link>
           </div>
 
@@ -74,8 +95,8 @@ const Header = () => {
                     {({ active }) => (
                       <span
                         className={classNames(
-                          active ? 'bg-gray-100' : '',
-                          'block px-4 py-2 text-sm text-gray-700'
+                          active ? "bg-gray-100" : "",
+                          "block px-4 py-2 text-sm text-gray-700"
                         )}
                       >
                         ID: {user.id}
@@ -88,8 +109,8 @@ const Header = () => {
                     <Link
                       to="/profilesettings"
                       className={classNames(
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700'
+                        active ? "bg-gray-100" : "",
+                        "block px-4 py-2 text-sm text-gray-700"
                       )}
                     >
                       Profile Settings
@@ -101,8 +122,8 @@ const Header = () => {
                     <button
                       onClick={handleLogout}
                       className={classNames(
-                        active ? 'bg-gray-100' : '',
-                        'w-full text-left px-4 py-2 text-sm text-gray-700'
+                        active ? "bg-gray-100" : "",
+                        "w-full text-left px-4 py-2 text-sm text-gray-700"
                       )}
                     >
                       Logout
@@ -116,14 +137,14 @@ const Header = () => {
       </div>
 
       {/* Mobile Menu */}
-      <DisclosurePanel className="sm:hidden">
+      <DisclosurePanel className="sm:hidden absolute top-16 left-0 w-full bg-transparent z-50 shadow-lg">
         <div className="px-2 pt-2 pb-3 space-y-1">
           {NAV_ITEMS.map((item) => (
             <DisclosureButton
               key={item.name}
               as={Link}
               to={item.path}
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+              className="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-500 hover:bg-gray-700 hover:text-white"
             >
               {item.name}
             </DisclosureButton>

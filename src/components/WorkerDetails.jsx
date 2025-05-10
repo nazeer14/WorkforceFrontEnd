@@ -38,27 +38,28 @@ function WorkerDetails({ workers }) {
       navigate("/home"); // fallback route
     }
   };
+ 
   
 
   if (loading) return <p className="p-4">Loading...</p>;
   if (!worker) return <p className="p-4 text-red-500">Worker not found</p>;
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-white shadow-lg rounded-lg">
+    <div className="m-2 p-6 max-w-xl mx-auto bg-white shadow-lg rounded-lg">
       <img
         src={worker.profileImage || "userpic.jpg"}
-        
         alt={worker.firstname}
-        className="w-full h-full object-cover rounded-md"
+        className="w-1/2 h-1/4 object-cover rounded-md mx-auto"
       />
-      <h2 className="text-2xl font-bold mt-4">{worker?.firstname}</h2>
-      <p className="text-gray-700">{worker?.workCategory}</p>
-      <p className="mt-2">Age: {worker?.age}</p>
-      <p>Experience: {worker?.experience ? `${worker.experience} years` : <span>N/A</span>}</p>
-      <p>Location: {worker.preferedLocation}</p>
-      <p>Amount: ₹{worker.price} / day</p>
-      <p className="mt-2 text-yellow-600">⭐ {worker.rating || 4.5} stars</p>
-      <p className="mt-2 text-gray-600">Description: {worker.description || "No bio available."}</p>
+      <h2 className="text-2xl font-bold mt-4">{worker?.firstname?.toUpperCase()}<span className="text-gray-800"> ({worker?.workCategory})</span></h2>
+      <p className="text-xl mt-2"><strong>Name : </strong><span>{worker?.firstname?.toUpperCase()} {worker?.lastname?.toUpperCase()}</span></p>
+      <p className="mt-1 text-yellow-800">{worker.rating || 4.5} ⭐</p>
+      <p className="mt-1"><strong>Age: </strong>{worker?.age ||"N/A"}</p>
+      <p><strong>Experience : </strong> {worker?.experience ? `${worker.experience} years` : <span>N/A</span>}</p>
+      <p><strong>Location : </strong> {worker.preferedLocation}</p>
+      <p className="mt-1 text-yellow-600"><strong className="text-black">Amount : </strong>₹{worker.price} / day</p>
+      
+      <p className="mt-1 text-gray-800">Revies: {worker.description || "No Reviews available."}</p>
 
       <div className="flex gap-4 mt-6">
         <button
@@ -68,7 +69,7 @@ function WorkerDetails({ workers }) {
           Back
         </button>
         <button
-          onClick={() => alert("Booking requested!")}
+          onClick={() => navigate(`/worker/booking/${worker?.id}`,{ state: { worker }})}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Book
